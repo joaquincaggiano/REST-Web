@@ -89,4 +89,25 @@ export class TodoController {
 
     res.status(200).json(todos[todoIndex]);
   };
+
+  public deleteTodo = (req: Request, res: Response) => {
+    const { id } = req.params;
+    const todoId = parseInt(id);
+
+    if (isNaN(todoId)) {
+      res.status(400).json({ message: "Invalid todo id" });
+      return;
+    }
+
+    const todoIndex = todos.findIndex((todo) => todo.id === todoId);
+
+    if (todoIndex === -1) {
+      res.status(404).json({ message: `Todo ${id} not found` });
+      return;
+    }
+
+    todos.splice(todoIndex, 1);
+
+    res.status(204).json({ message: `Todo ${id} deleted` });
+  };
 }
