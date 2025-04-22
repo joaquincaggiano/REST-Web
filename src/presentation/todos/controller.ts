@@ -51,12 +51,6 @@ export class TodoController {
 
   public updateTodo = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { title } = req.body;
-
-    if (!title || title.trim().length === 0) {
-      res.status(400).json({ message: "Title is required" });
-      return;
-    }
 
     const todoId = parseInt(id);
 
@@ -65,12 +59,25 @@ export class TodoController {
       return;
     }
 
+    const todo = await prisma.todo.findUnique({
+      where: {
+        id: todoId,
+      },
+    });
+
+    if (!todo) {
+      res.status(404).json({ message: `Todo ${id} not found` });
+    }
+
+    const { title, completedAt } = req.body;
+
     const updatedTodo = await prisma.todo.update({
       where: {
         id: todoId,
       },
       data: {
         title,
+        completedAt,
       },
     });
 
@@ -84,6 +91,16 @@ export class TodoController {
     if (isNaN(todoId)) {
       res.status(400).json({ message: "Invalid todo id" });
       return;
+    }
+
+    const todo = await prisma.todo.findUnique({
+      where: {
+        id: todoId,
+      },
+    });
+
+    if (!todo) {
+      res.status(404).json({ message: `Todo ${id} not found` });
     }
 
     await prisma.todo.delete({
