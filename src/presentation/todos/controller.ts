@@ -77,7 +77,7 @@ export class TodoController {
       },
       data: {
         title,
-        completedAt,
+        completedAt: completedAt ? new Date(completedAt) : null,
       },
     });
 
