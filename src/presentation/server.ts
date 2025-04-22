@@ -19,9 +19,24 @@ export class Server {
   async start() {
     this.app.use(express.static(this.publicPath));
 
-    this.app.get("/", (req, res) => {
-      const indexPath = path.join(__dirname, `../../${this.publicPath}/index.html`);
-      res.sendFile(indexPath);
+    this.app.get("/api/todos", (req, res) => {
+      res.json([
+        {
+          id: 1,
+          title: "Buy milk",
+          createdAt: new Date(),
+        },
+        {
+          id: 2,
+          title: "Buy bread",
+          createdAt: new Date(),
+        },
+        {
+          id: 3,
+          title: "Buy eggs",
+          createdAt: new Date(),
+        },
+      ]);
     });
 
     this.app.use((req, res) => {
