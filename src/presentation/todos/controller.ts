@@ -4,17 +4,17 @@ const todos = [
   {
     id: 1,
     title: "Buy milk",
-    createdAt: new Date(),
+    completedAt: new Date(),
   },
   {
     id: 2,
     title: "Buy bread",
-    createdAt: new Date(),
+    completedAt: new Date(),
   },
   {
     id: 3,
     title: "Buy eggs",
-    createdAt: new Date(),
+    completedAt: new Date(),
   },
 ];
 
@@ -54,7 +54,7 @@ export class TodoController {
     const newTodo = {
       id: todos.length + 1,
       title,
-      createdAt: new Date(),
+      completedAt: new Date(),
     };
 
     todos.push(newTodo);
