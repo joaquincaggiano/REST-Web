@@ -22,7 +22,7 @@ export class TodoController {
   constructor() {}
 
   public getTodos = (req: Request, res: Response) => {
-    res.json(todos);
+    res.status(200).json(todos);
   };
 
   public getTodoById = (req: Request, res: Response) => {
@@ -40,6 +40,25 @@ export class TodoController {
       res.status(404).json({ message: `Todo ${id} not found` });
     }
 
-    res.json(todo);
+    res.status(200).json(todo);
+  };
+
+  public createTodo = (req: Request, res: Response) => {
+    const { title } = req.body;
+
+    if (!title || title.trim().length === 0) {
+      res.status(400).json({ message: "Title is required" });
+      return;
+    }
+
+    const newTodo = {
+      id: todos.length + 1,
+      title,
+      createdAt: new Date(),
+    };
+
+    todos.push(newTodo);
+
+    res.status(201).json(newTodo);
   };
 }

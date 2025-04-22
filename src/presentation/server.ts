@@ -20,14 +20,22 @@ export class Server {
   }
 
   async start() {
+    // Middlewares
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
+    // Public folder
     this.app.use(express.static(this.publicPath));
 
+    // Routes
     this.app.use(this.routes);
 
+    // SPA
     this.app.use((req, res) => {
       res.sendFile(path.join(process.cwd(), this.publicPath, "index.html"));
     });
 
+    // Start server
     this.app.listen(this.port, () => {
       console.log(`Server is running on port ${this.port}`);
     });
