@@ -11,6 +11,8 @@ export class TodoDatasourceImpl implements TodoDatasource {
   }
 
   async findById(id: number): Promise<TodoEntity> {
+    if (isNaN(id)) throw new Error("Invalid todo id");
+    
     const todo = await prisma.todo.findUnique({
       where: {
         id,
