@@ -58,5 +58,35 @@ describe("Todos Routes", () => {
 
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
-  
+
+  test("should create a todo", async () => {
+    const { body } = await request(testServer.app)
+      .post("/api/todos")
+      .send(todo1)
+      .expect(201);
+
+    expect(body).toEqual({
+      id: expect.any(Number),
+      title: todo1.title,
+      completedAt: null,
+    });
+  });
+
+  test("should return an error creating a todo when title is empty", async () => {
+    const { body } = await request(testServer.app)
+      .post("/api/todos")
+      .send({})
+      .expect(400);
+
+    expect(body).toEqual({ message: "Title is required" });
+  });
+
+  test("should return an error creating a todo when title is empty with spaces", async () => {
+    const { body } = await request(testServer.app)
+      .post("/api/todos")
+      .send({ title: "    " })
+      .expect(400);
+
+    expect(body).toEqual({ message: "Title cannot be empty" });
+  });
 });
