@@ -11,11 +11,14 @@ describe("Todos Routes", () => {
     testServer.close();
   });
 
+  beforeEach(async () => {
+    await prisma.todo.deleteMany();
+  });
+
   const todo1 = { title: "Hola mundo 1" };
   const todo2 = { title: "Hola mundo 2" };
 
   test("should return a list of todos", async () => {
-    await prisma.todo.deleteMany();
     await prisma.todo.createMany({
       data: [todo1, todo2],
     });
@@ -29,4 +32,31 @@ describe("Todos Routes", () => {
     expect(body[0].title).toBe(todo1.title);
     expect(body[1].title).toBe(todo2.title);
   });
+
+  test("should return a todo by id", async () => {
+    const todo = await prisma.todo.create({
+      data: todo1,
+    });
+
+    const { body } = await request(testServer.app)
+      .get(`/api/todos/${todo.id}`)
+      .expect(200);
+
+    expect(body).toEqual({
+      id: todo.id,
+      title: todo.title,
+      completedAt: todo.completedAt,
+    });
+  });
+
+  test("should return 400 Error api/todos/:id", async () => {
+    const todoId = "9999";
+
+    const { body } = await request(testServer.app)
+      .get(`/api/todos/${todoId}`)
+      .expect(400);
+
+    expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
+  });
+  
 });
