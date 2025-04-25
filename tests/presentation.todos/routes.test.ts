@@ -89,4 +89,52 @@ describe("Todos Routes", () => {
 
     expect(body).toEqual({ message: "Title cannot be empty" });
   });
+
+  test("should return an updated todo", async () => {
+    const todo = await prisma.todo.create({
+      data: todo1,
+    });
+
+    const title = "Updated todo";
+
+    const { body } = await request(testServer.app)
+      .put(`/api/todos/${todo.id}`)
+      .send({ title, completedAt: "2025-05-25" })
+      .expect(200);
+
+    expect(body).toEqual({
+      id: todo.id,
+      title,
+      completedAt: "2025-05-25T00:00:00.000Z",
+    });
+  });
+
+  test("should return 404 if TODO is not found when updating", async () => {
+    const todoId = "9999";
+
+    const { body } = await request(testServer.app)
+      .put(`/api/todos/${todoId}`)
+      .expect(400);
+
+    console.log(body);
+
+    expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
+  });
+
+  test("should return an updated todo with only completedAt", async () => {
+    const todo = await prisma.todo.create({
+      data: todo1,
+    });
+
+    const { body } = await request(testServer.app)
+      .put(`/api/todos/${todo.id}`)
+      .send({ completedAt: "2025-05-25" })
+      .expect(200);
+
+    expect(body).toEqual({
+      id: todo.id,
+      title: todo.title,
+      completedAt: "2025-05-25T00:00:00.000Z",
+    });
+  });
 });
