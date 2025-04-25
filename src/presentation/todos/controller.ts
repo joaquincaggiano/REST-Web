@@ -84,7 +84,7 @@ export class TodoController {
     new DeleteTodo(this.todoRepository)
       .execute(todoId)
       .then(() => {
-        res.status(204).json({ message: `Todo ${id} deleted` });
+        res.status(200).json({ message: `Todo ${id} deleted` });
       })
       .catch((error) => {
         res.status(400).json({ error: error.message });

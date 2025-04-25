@@ -116,8 +116,6 @@ describe("Todos Routes", () => {
       .put(`/api/todos/${todoId}`)
       .expect(400);
 
-    console.log(body);
-
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
 
@@ -136,5 +134,31 @@ describe("Todos Routes", () => {
       title: todo.title,
       completedAt: "2025-05-25T00:00:00.000Z",
     });
+  });
+
+  test("should delete a todo", async () => {
+    const todo = await prisma.todo.create({
+      data: todo1,
+    });
+
+    const id = todo.id;
+
+    const { body } = await request(testServer.app)
+      .delete(`/api/todos/${todo.id}`)
+      .expect(200);
+
+    expect(body).toEqual({
+      message: `Todo ${id} deleted`,
+    });
+  });
+
+  test("should return 404 if TODO is not found when deleting", async () => {
+    const todoId = "9999";
+
+    const { body } = await request(testServer.app)
+      .delete(`/api/todos/${todoId}`)
+      .expect(400);
+
+    expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
 });
