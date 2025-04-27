@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.62% </span>
+                <span class="strong">93.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>88/93</span>
+                <span class='fraction'>95/102</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.11% </span>
+                <span class="strong">89.47% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>16/17</span>
+                <span class='fraction'>17/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.62% </span>
+                <span class="strong">93.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>88/93</span>
+                <span class='fraction'>95/102</span>
             </div>
         
             
@@ -156,7 +156,16 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -167,6 +176,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -257,9 +275,18 @@ import { GetTodo } from "../../domain/use-cases/todo/get-todo";
 import { CreateTodo } from "../../domain/use-cases/todo/create-todo";
 import { UpdateTodo } from "../../domain/use-cases/todo/update-todo";
 import { DeleteTodo } from "../../domain/use-cases/todo/delete-todo";
+import { CustomError } from "../../domain/errors/custom.error";
 &nbsp;
 export class TodoController {
   constructor(private readonly todoRepository: TodoRepository) {}
+&nbsp;
+  private handleError(res: Response, error: unknown) {
+    if (error instanceof CustomError) {
+      res.status(error.statusCode).json({ error: error.message });
+    }<span class="branch-0 cbranch-no" title="branch not covered" > else {</span>
+<span class="cstat-no" title="statement not covered" >      res.status(500).json({ error: "Internal server error" });</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+  }
 &nbsp;
   public getTodos = (req: Request, res: Response) =&gt; {
     new GetTodos(this.todoRepository)
@@ -268,7 +295,7 @@ export class TodoController {
         res.status(200).json(todos);
       })
       .catch((error) =&gt; {
-<span class="cstat-no" title="statement not covered" >        res.status(400).json({ error: error.message });</span>
+<span class="cstat-no" title="statement not covered" >        this.handleError(res, error);</span>
       });
   };
 &nbsp;
@@ -282,7 +309,7 @@ export class TodoController {
         res.status(200).json(todo);
       })
       .catch((error) =&gt; {
-        res.status(400).json({ error: error.message });
+        this.handleError(res, error);
       });
   };
 &nbsp;
@@ -300,7 +327,7 @@ export class TodoController {
         res.status(201).json(todo);
       })
       .catch((error) =&gt; {
-<span class="cstat-no" title="statement not covered" >        res.status(400).json({ error: error.message });</span>
+<span class="cstat-no" title="statement not covered" >        this.handleError(res, error);</span>
       });
   };
 &nbsp;
@@ -324,7 +351,7 @@ export class TodoController {
         res.status(200).json(todo);
       })
       .catch((error) =&gt; {
-        res.status(400).json({ error: error.message });
+        this.handleError(res, error);
       });
   };
 &nbsp;
@@ -338,7 +365,7 @@ export class TodoController {
         res.status(200).json({ message: `Todo ${id} deleted` });
       })
       .catch((error) =&gt; {
-        res.status(400).json({ error: error.message });
+        this.handleError(res, error);
       });
   };
 }
@@ -349,7 +376,7 @@ export class TodoController {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-25T14:58:02.638Z
+                at 2025-04-25T15:43:49.533Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

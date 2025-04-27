@@ -2,6 +2,7 @@ import { prisma } from "../../data/postgres";
 import { TodoDatasource } from "../../domain/datasources/todo.datasource";
 import { CreateTodoDto, UpdateTodoDto } from "../../domain/dtos";
 import { TodoEntity } from "../../domain/entities/todo.entity";
+import { CustomError } from "../../domain/errors/custom.error";
 
 export class TodoDatasourceImpl implements TodoDatasource {
   async getAll(): Promise<TodoEntity[]> {
@@ -11,15 +12,15 @@ export class TodoDatasourceImpl implements TodoDatasource {
   }
 
   async findById(id: number): Promise<TodoEntity> {
-    if (isNaN(id)) throw new Error("Invalid todo id");
-    
+    if (isNaN(id)) throw new CustomError("Invalid todo id", 400);
+
     const todo = await prisma.todo.findUnique({
       where: {
         id,
       },
     });
 
-    if (!todo) throw new Error(`Todo with id ${id} not found`);
+    if (!todo) throw new CustomError(`Todo with id ${id} not found`, 404);
 
     return TodoEntity.fromObject(todo);
   }

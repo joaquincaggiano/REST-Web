@@ -49,12 +49,12 @@ describe("Todos Routes", () => {
     });
   });
 
-  test("should return 400 Error api/todos/:id", async () => {
+  test("should return 404 Error api/todos/:id", async () => {
     const todoId = "9999";
 
     const { body } = await request(testServer.app)
       .get(`/api/todos/${todoId}`)
-      .expect(400);
+      .expect(404);
 
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
@@ -114,7 +114,7 @@ describe("Todos Routes", () => {
 
     const { body } = await request(testServer.app)
       .put(`/api/todos/${todoId}`)
-      .expect(400);
+      .expect(404);
 
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
@@ -157,7 +157,7 @@ describe("Todos Routes", () => {
 
     const { body } = await request(testServer.app)
       .delete(`/api/todos/${todoId}`)
-      .expect(400);
+      .expect(404);
 
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` });
   });
